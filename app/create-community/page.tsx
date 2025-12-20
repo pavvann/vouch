@@ -109,6 +109,7 @@ export default function CreateCommunityPage() {
             <div className="relative">
               {coverImagePreview ? (
                 <div className="relative w-full h-48 rounded-xl overflow-hidden group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={coverImagePreview}
                     alt="Cover preview"

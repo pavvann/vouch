@@ -20,7 +20,13 @@ export default async function DashboardPage() {
       userId: session.user.id,
     },
     include: {
-      community: true,
+      community: {
+        include: {
+          _count: {
+            select: { memberships: true },
+          },
+        },
+      },
     },
     orderBy: {
       joinedAt: 'desc',
