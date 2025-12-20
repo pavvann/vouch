@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { requireAuth } from '@/lib/auth-helpers'
 import { revalidatePath } from 'next/cache'
 
-export async function createMoment(communityId: string, content: string) {
+export async function createMoment(communityId: string, content: string, image?: string | null) {
   const user = await requireAuth()
 
   // Verify membership
@@ -26,6 +26,7 @@ export async function createMoment(communityId: string, content: string) {
       communityId,
       userId: user.id,
       content: content.trim(),
+      image,
     },
   })
 

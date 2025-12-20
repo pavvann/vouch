@@ -25,7 +25,7 @@ export default function VouchButton({
     try {
       const result = await vouchUser(targetUserId, communityId)
       if (result.success) {
-        setSuccess(true)
+        setSuccess(true) // optimistic success state
         router.refresh()
       } else {
         setError(result.error || 'Failed to vouch')
@@ -37,26 +37,21 @@ export default function VouchButton({
     }
   }
 
-  if (success) {
-    return (
-      <div className="flex items-center justify-between p-3 border border-gray-200 rounded">
-        <span className="text-gray-700">{targetUserName}</span>
-        <span className="text-green-600 text-sm">✓ Vouched</span>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex items-center justify-between p-3 border border-gray-200 rounded">
-      <span className="text-gray-700">{targetUserName}</span>
+    <div className="flex items-center justify-between p-3 border border-slate-800 rounded-xl bg-slate-900/60">
+      <span className="text-gray-100">{targetUserName}</span>
       <div className="flex items-center gap-2">
-        {error && <span className="text-red-600 text-sm">{error}</span>}
+        {error && <span className="text-red-400 text-sm">{error}</span>}
         <button
           onClick={handleVouch}
-          disabled={loading}
-          className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading || success}
+          className={`px-3 py-1 text-sm rounded-lg transition whitespace-nowrap ${
+            success
+              ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/40 cursor-default'
+              : 'bg-gradient-to-r from-fuchsia-500 via-rose-500 to-purple-600 text-white shadow-md hover:brightness-110 disabled:opacity-60'
+          }`}
         >
-          {loading ? 'Vouching...' : 'Vouch'}
+          {success ? '✓ Vouched' : loading ? 'Vouching...' : 'Vouch'}
         </button>
       </div>
     </div>

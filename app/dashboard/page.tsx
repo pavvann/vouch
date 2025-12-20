@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 import LogoutButton from '@/components/LogoutButton'
 import CreateCommunityButton from '@/components/CreateCommunityButton'
+import { formatRole } from '@/lib/role-utils'
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -27,34 +28,21 @@ export default async function DashboardPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Communities</h1>
-          <div className="flex gap-4">
-            <Link
-              href="/discover"
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Discover
-            </Link>
-            <CreateCommunityButton />
-            <LogoutButton />
-          </div>
+    <div className="min-h-screen pb-24">
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+        <div>
+          <p className="section-title mb-2">Dashboard</p>
+          <h1 className="page-header">My Communities</h1>
         </div>
 
         {memberships.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">You're not a member of any communities yet.</p>
-            <div className="flex gap-4 justify-center">
-              <Link
-                href="/discover"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-              >
-                Discover Communities
-              </Link>
-              <CreateCommunityButton />
-            </div>
+          <div className="card text-center py-12">
+            <div className="text-6xl mb-4">🏘️</div>
+            <h3 className="text-xl font-semibold mb-2">No communities yet</h3>
+            <p className="text-gray-400 mb-6">Join or create one to get started</p>
+            <Link href="/discover" className="btn-primary inline-block">
+              Discover Communities ✨
+            </Link>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -62,27 +50,41 @@ export default async function DashboardPage() {
               <Link
                 key={membership.id}
                 href={`/community/${membership.community.id}/chat`}
-                className="block bg-white rounded-lg shadow p-6 hover:shadow-md transition"
+                className="card-interactive group overflow-hidden p-0"
               >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h2 className="text-xl font-semibold mb-1">
-                      {membership.community.name}
-                    </h2>
-                    {membership.community.description && (
-                      <p className="text-gray-600 text-sm mb-2">
-                        {membership.community.description}
-                      </p>
-                    )}
-                    <div className="flex gap-4 text-sm text-gray-500">
-                      <span>Role: {membership.role}</span>
-                      <span>
-                        Requires {membership.community.requiredVouches} vouch
-                        {membership.community.requiredVouches !== 1 ? 'es' : ''}
-                      </span>
+                {membership.community.coverImage && (
+                  <div className="w-full h-32 overflow-hidden">
+                    <img
+                      src={membership.community.coverImage}
+                      alt={membership.community.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <h2 className="text-2xl font-bold mb-2 group-hover:text-gradient transition-all">
+                        {membership.community.name}
+                      </h2>
+                      {membership.community.description && (
+                        <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                          {membership.community.description}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <span className="badge bg-purple-500/20 text-purple-300 border-purple-500/30">
+                          {formatRole(membership.role)}
+                        </span>
+                        <span className="badge bg-white/5 text-gray-300">
+                          {membership.community._count?.memberships || 0} members
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-2xl ml-4 group-hover:translate-x-1 transition-transform">
+                      →
                     </div>
                   </div>
-                  <span className="text-blue-600">→</span>
                 </div>
               </Link>
             ))}

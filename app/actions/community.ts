@@ -69,7 +69,8 @@ export async function createCommunity(
   name: string,
   description: string | null,
   requiredVouches: number,
-  memberCooldownDays: number
+  memberCooldownDays: number,
+  coverImage: string | null
 ) {
   const user = await requireAuth()
 
@@ -79,6 +80,7 @@ export async function createCommunity(
       description,
       requiredVouches,
       memberCooldownDays,
+      coverImage,
     },
   })
 

@@ -50,119 +50,84 @@ export default async function DiscoverPage() {
   const discoverable = allCommunities.filter((c) => !userMembershipIds.has(c.id))
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Discover Communities</h1>
-          <div className="flex gap-4">
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              My Communities
-            </Link>
-            <CreateCommunityButton />
-            <LogoutButton />
-          </div>
+    <div className="min-h-screen pb-24">
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        <div>
+          <p className="section-title mb-2">Explore</p>
+          <h1 className="page-header">Discover Communities</h1>
+          <p className="text-gray-400 text-sm mt-2">Find new communities to join</p>
         </div>
 
         {discoverable.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow">
-            <p className="text-gray-600 mb-4">No communities to discover yet.</p>
+          <div className="card text-center py-12">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold mb-2">No communities to discover</h3>
+            <p className="text-gray-400 mb-6">Be the first to create one!</p>
             <CreateCommunityButton />
           </div>
         ) : (
-          <div className="space-y-4 mb-8">
-            <h2 className="text-xl font-semibold text-gray-700">
-              Available Communities
-            </h2>
-            <div className="grid gap-4">
-              {discoverable.map((community) => {
-                const vouchCount = vouchCountsByCommunity.get(community.id) || 0
-                const ready = vouchCount >= community.requiredVouches
+          <div className="grid gap-4">
+            {discoverable.map((community) => {
+              const vouchCount = vouchCountsByCommunity.get(community.id) || 0
+              const ready = vouchCount >= community.requiredVouches
 
-                return (
-                  <Link
-                    key={community.id}
-                    href={`/community/${community.id}`}
-                    className="block bg-white rounded-lg shadow p-6 hover:shadow-md transition"
-                  >
+              return (
+                <Link
+                  key={community.id}
+                  href={`/community/${community.id}`}
+                  className="block card-interactive overflow-hidden p-0 hover:shadow-2xl transition group"
+                >
+                  {community.coverImage && (
+                    <div className="w-full h-32 overflow-hidden">
+                      <img
+                        src={community.coverImage}
+                        alt={community.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <h3 className="text-xl font-semibold mb-1">
+                        <h3 className="text-xl font-semibold mb-1 text-white">
                           {community.name}
                         </h3>
                         {community.description && (
-                          <p className="text-gray-600 text-sm mb-3">
+                          <p className="text-gray-300 text-sm mb-3">
                             {community.description}
                           </p>
                         )}
-                        <div className="flex gap-4 text-sm text-gray-500 mb-2">
-                          <span>
-                            {community._count.memberships} member
-                            {community._count.memberships !== 1 ? 's' : ''}
+                        <div className="flex flex-wrap gap-3 text-xs text-gray-400 mb-3">
+                          <span className="badge bg-white/5 text-gray-300">
+                            👥 {community._count.memberships} member{community._count.memberships !== 1 ? 's' : ''}
                           </span>
-                          <span>
-                            Requires {community.requiredVouches} vouch
-                            {community.requiredVouches !== 1 ? 'es' : ''}
+                          <span className="badge bg-white/5 text-gray-300">
+                            ✨ {community.requiredVouches} vouch{community.requiredVouches !== 1 ? 'es' : ''}
                           </span>
-                          <span>Cooldown: {community.memberCooldownDays} days</span>
+                          <span className="badge bg-white/5 text-gray-300">
+                            ⏱️ {community.memberCooldownDays}d cooldown
+                          </span>
                         </div>
-                        <div className="mt-3">
+                        <div>
                           {ready ? (
-                            <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded">
+                            <span className="badge-success">
                               ✓ Ready to join ({vouchCount}/{community.requiredVouches})
                             </span>
                           ) : (
-                            <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded">
+                            <span className="badge-info">
                               {vouchCount}/{community.requiredVouches} vouches received
                             </span>
                           )}
                         </div>
                       </div>
-                      <span className="text-blue-600 ml-4">→</span>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {joined.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Your Communities
-            </h2>
-            <div className="grid gap-4">
-              {joined.map((community) => (
-                <Link
-                  key={community.id}
-                  href={`/community/${community.id}/chat`}
-                  className="block bg-white rounded-lg shadow p-6 hover:shadow-md transition"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-1">
-                        {community.name}
-                      </h3>
-                      {community.description && (
-                        <p className="text-gray-600 text-sm mb-2">
-                          {community.description}
-                        </p>
-                      )}
-                      <div className="flex gap-4 text-sm text-gray-500">
-                        <span>
-                          {community._count.memberships} member
-                          {community._count.memberships !== 1 ? 's' : ''}
-                        </span>
+                      <div className="text-2xl ml-4 group-hover:translate-x-1 transition-transform text-fuchsia-300">
+                        →
                       </div>
                     </div>
-                    <span className="text-blue-600">→</span>
                   </div>
                 </Link>
-              ))}
-            </div>
+              )
+            })}
           </div>
         )}
       </div>

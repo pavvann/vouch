@@ -1,0 +1,7 @@
+# Uploads Directory
+
+This directory stores user-uploaded files.
+
+## Structure
+- `/covers` - Community cover images
+

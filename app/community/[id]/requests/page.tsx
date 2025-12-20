@@ -26,26 +26,32 @@ export default async function RequestsPage({
   const requests = await listJoinRequests(params.id)
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">Let Someone In</h2>
+    <div className="space-y-6">
+      <div>
+        <p className="section-title mb-2">Access Requests</p>
+        <h2 className="text-2xl font-bold text-white">Let Someone In</h2>
+      </div>
+      
       {requests.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-6 text-gray-600">
-          No requests right now.
+        <div className="card text-center py-12">
+          <div className="text-6xl mb-4">🙋</div>
+          <p className="text-gray-400">No pending requests</p>
+          <p className="text-sm text-gray-500 mt-2">When someone requests access, they'll show up here</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {requests.map((req) => (
             <div
               key={req.id}
-              className="bg-white rounded-lg shadow p-4 flex justify-between items-center"
+              className="card-interactive flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
-              <div>
-                <p className="font-semibold">
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-white truncate">
                   {req.user.name || req.user.email}
                 </p>
-                <p className="text-sm text-gray-500">{req.user.email}</p>
-                <p className="text-xs text-gray-400">
-                  Requested on {new Date(req.createdAt).toLocaleString()}
+                <p className="text-sm text-gray-400 truncate">{req.user.email}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  🕐 {new Date(req.createdAt).toLocaleDateString()}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -55,11 +61,8 @@ export default async function RequestsPage({
                     await vouchUser(req.user.id, params.id)
                   }}
                 >
-                  <button
-                    type="submit"
-                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-                  >
-                    Vouch
+                  <button type="submit" className="btn-primary text-sm px-4 py-2">
+                    ✨ Vouch
                   </button>
                 </form>
                 <form
@@ -68,11 +71,8 @@ export default async function RequestsPage({
                     await dismissJoinRequest(params.id, req.user.id)
                   }}
                 >
-                  <button
-                    type="submit"
-                    className="px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300"
-                  >
-                    Dismiss
+                  <button type="submit" className="btn-secondary text-sm px-4 py-2">
+                    ✕ Dismiss
                   </button>
                 </form>
               </div>

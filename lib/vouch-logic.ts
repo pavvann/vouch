@@ -85,6 +85,16 @@ export async function vouchForUser(
     return { success: false, error: 'You have already vouched for this user' }
   }
 
+  // Fetch voucher membership to know role
+  const voucherMembership = await prisma.membership.findUnique({
+    where: {
+      userId_communityId: {
+        userId: fromUserId,
+        communityId,
+      },
+    },
+  })
+
   // Check if target user is already a member
   const targetMembership = await prisma.membership.findUnique({
     where: {
@@ -131,6 +141,26 @@ export async function vouchForUser(
         cooldownPenalty: false, // Reset penalty after successful vouch
       },
     })
+  }
+
+  // Veto path: founders and validators instantly admit the user
+  if (
+    voucherMembership &&
+    (voucherMembership.role === Role.FOUNDER || voucherMembership.role === Role.VALIDATOR)
+  ) {
+    await prisma.membership.create({
+      data: {
+        userId: toUserId,
+        communityId,
+        role: Role.MEMBER,
+      },
+    })
+
+    await prisma.joinRequest.deleteMany({
+      where: { communityId, userId: toUserId },
+    })
+
+    return { success: true }
   }
 
   // Check if user can now join

@@ -73,23 +73,27 @@ export default function ChatClient({
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col h-[calc(100vh-200px)]">
-      <div className="flex-1 overflow-y-auto bg-white rounded-lg shadow p-4 mb-4">
+    <div className="space-y-4">
+      <div className="glass rounded-2xl p-4 h-[60vh] overflow-y-auto scrollbar-hide">
         {messages.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No messages yet. Start the conversation!</p>
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="text-6xl mb-4">💬</div>
+            <p className="text-gray-400">No messages yet</p>
+            <p className="text-sm text-gray-500">Start the conversation!</p>
+          </div>
         ) : (
           <div className="space-y-4">
             {messages.map((message) => (
-              <div key={message.id} className="flex flex-col">
+              <div key={message.id} className="group">
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="font-medium text-sm">
-                    {message.user.name || message.user.email}
+                  <span className="font-semibold text-sm text-gradient">
+                    {message.user.name || message.user.email.split('@')[0]}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {new Date(message.createdAt).toLocaleString()}
+                    {new Date(message.createdAt).toLocaleTimeString()}
                   </span>
                 </div>
-                <p className="text-gray-900">{message.content}</p>
+                <p className="text-white/90 leading-relaxed">{message.content}</p>
               </div>
             ))}
             <div ref={messagesEndRef} />
@@ -98,7 +102,7 @@ export default function ChatClient({
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="glass border-red-500/30 bg-red-500/10 text-red-300 px-4 py-3 rounded-xl text-sm">
           {error}
         </div>
       )}
@@ -109,15 +113,15 @@ export default function ChatClient({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="input flex-1"
           disabled={loading}
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+          className="btn-primary px-6"
         >
-          {loading ? 'Sending...' : 'Send'}
+          {loading ? '...' : '→'}
         </button>
       </form>
     </div>

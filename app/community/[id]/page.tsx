@@ -80,17 +80,17 @@ export default async function CommunityPage({
     }))
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="min-h-screen">
+      <div className="max-w-2xl mx-auto px-4 py-8 pb-24 md:pb-10">
         <div className="mb-4">
           <Link
             href="/discover"
-            className="text-blue-600 hover:text-blue-800 text-sm"
+            className="text-fuchsia-300 hover:text-fuchsia-200 text-sm"
           >
             ← Back to Discover
           </Link>
         </div>
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="card mb-6">
           <h1 className="text-3xl font-bold mb-2">{community.name}</h1>
           {community.description && (
             <p className="text-gray-600 mb-4">{community.description}</p>
@@ -102,18 +102,18 @@ export default async function CommunityPage({
         </div>
 
         {!session ? (
-          <div className="bg-white rounded-lg shadow p-6 text-center">
+          <div className="card text-center">
             <p className="text-gray-600 mb-4">Please sign in to view this community</p>
             <a
               href="/login"
-              className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="inline-block btn-primary"
             >
               Sign In
             </a>
           </div>
         ) : (
           <>
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <div className="card mb-6">
               <h2 className="text-xl font-semibold mb-4">Your Status</h2>
               <p className="text-gray-700 mb-2">
                 You have received <strong>{vouchCount}</strong> of{' '}
@@ -131,7 +131,7 @@ export default async function CommunityPage({
               )}
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="card">
               <h2 className="text-xl font-semibold mb-4">Get Let In</h2>
               {existingRequest ? (
                 <div className="flex items-center justify-between">
@@ -155,7 +155,7 @@ export default async function CommunityPage({
                 >
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className="btn-primary"
                   >
                     Let me in
                   </button>
