@@ -14,11 +14,12 @@ export default function BottomNav() {
   const { status } = useSession()
   const pathname = usePathname()
 
-  if (
-    status !== 'authenticated' ||
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/register')
-  ) {
+  // Don't show on auth pages or when not authenticated
+  if (status !== 'authenticated') {
+    return null
+  }
+
+  if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname === '/') {
     return null
   }
 

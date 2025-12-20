@@ -11,27 +11,48 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-2">Vouch</h1>
-          <p className="text-gray-600 mb-8">
-            Private communities built on trust
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-lg w-full space-y-12 text-center">
+        <div>
+          <h1 className="text-7xl font-black mb-4 bg-gradient-to-br from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Vouch
+          </h1>
+          <p className="text-2xl text-gray-300 mb-2">
+            Communities built on trust
+          </p>
+          <p className="text-gray-500">
+            Get vouched in. Build your circle.
           </p>
         </div>
-        <div className="space-y-4">
+
+        <div className="space-y-4 max-w-sm mx-auto">
           <Link
             href="/login"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="block btn-primary w-full"
           >
-            Sign In
+            ✨ Sign In
           </Link>
           <Link
             href="/register"
-            className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="block btn-secondary w-full"
           >
-            Sign Up
+            🚀 Create Account
           </Link>
+        </div>
+
+        <div className="flex items-center justify-center gap-8 text-sm text-gray-500 pt-8">
+          <div className="text-center">
+            <div className="text-2xl mb-1">🤝</div>
+            <div>Vouch-based</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl mb-1">🔒</div>
+            <div>Private</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl mb-1">⚡</div>
+            <div>Instant</div>
+          </div>
         </div>
       </div>
     </div>
