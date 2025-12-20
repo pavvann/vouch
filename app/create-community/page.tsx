@@ -155,8 +155,9 @@ export default function CreateCommunityPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="input"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
                 placeholder="Enter community name"
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               />
             </div>
 
@@ -167,9 +168,10 @@ export default function CreateCommunityPage() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="input resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 resize-none"
                 rows={4}
                 placeholder="What's your community about?"
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               />
             </div>
           </div>
@@ -188,7 +190,8 @@ export default function CreateCommunityPage() {
               <select
                 value={requiredVouches}
                 onChange={(e) => setRequiredVouches(Number(e.target.value))}
-                className="input"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               >
                 <option value={1}>1 vouch (Less exclusive)</option>
                 <option value={2}>2 vouches (Balanced)</option>
@@ -206,7 +209,8 @@ export default function CreateCommunityPage() {
               <select
                 value={memberCooldownDays}
                 onChange={(e) => setMemberCooldownDays(Number(e.target.value))}
-                className="input"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               >
                 <option value={7}>7 days (More vouches)</option>
                 <option value={30}>30 days (Fewer vouches)</option>

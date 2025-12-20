@@ -113,42 +113,52 @@
   }
 
   .input {
-    @apply w-full px-4 py-3 rounded-xl;
-    @apply glass text-white placeholder-gray-500;
-    @apply focus:outline-none focus:ring-2 focus:ring-pink-500/50;
-    @apply transition-all duration-200;
-    background-color: rgba(255, 255, 255, 0.03) !important;
+    @apply w-full px-4 py-3 rounded-xl border border-white/10;
+    background-color: rgba(15, 23, 42, 0.8) !important;
     color: white !important;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .input::placeholder {
-    @apply text-gray-500;
+    color: rgb(107, 114, 128) !important;
   }
 
   .input:focus {
-    @apply bg-white/[0.05];
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5);
+    background-color: rgba(15, 23, 42, 0.9) !important;
   }
 
   /* Prevent browser autocomplete from changing background */
   .input:-webkit-autofill,
   .input:-webkit-autofill:hover,
-  .input:-webkit-autofill:focus {
+  .input:-webkit-autofill:focus,
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
     -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.03) inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.8) inset !important;
+    box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.8) inset !important;
     transition: background-color 5000s ease-in-out 0s;
+    caret-color: white;
   }
 
   select.input {
-    @apply bg-white/[0.03];
-    color: white;
+    background-color: rgba(15, 23, 42, 0.8) !important;
+    color: white !important;
   }
 
   select.input option {
-    @apply bg-slate-800 text-white;
+    background-color: rgb(30, 41, 59) !important;
+    color: white !important;
   }
 
   textarea.input {
-    background-color: rgba(255, 255, 255, 0.03) !important;
+    background-color: rgba(15, 23, 42, 0.8) !important;
     color: white !important;
   }
 

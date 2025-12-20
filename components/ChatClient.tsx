@@ -113,8 +113,9 @@ export default function ChatClient({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
-          className="input flex-1"
+          className="flex-1 px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
           disabled={loading}
+          style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
         />
         <button
           type="submit"

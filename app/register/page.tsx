@@ -56,10 +56,11 @@ export default function RegisterPage() {
                 id="name"
                 name="name"
                 type="text"
-                className="input"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
                 placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               />
             </div>
 
@@ -73,10 +74,11 @@ export default function RegisterPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="input"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               />
             </div>
 
@@ -90,10 +92,11 @@ export default function RegisterPage() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="input"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
               />
             </div>
           </div>
