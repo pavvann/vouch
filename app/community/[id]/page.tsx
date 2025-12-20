@@ -115,7 +115,7 @@ export default async function CommunityPage({
           <>
             <div className="card mb-6">
               <h2 className="text-xl font-semibold mb-4">Your Status</h2>
-              <p className="text-gray-700 mb-2">
+              <p className="text-gray-600 mb-2">
                 You have received <strong>{vouchCount}</strong> of{' '}
                 <strong>{community.requiredVouches}</strong> required vouches.
               </p>
