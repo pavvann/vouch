@@ -132,7 +132,7 @@ export default async function CommunityPage({
             </div>
 
             <div className="card">
-              <h2 className="text-xl font-semibold mb-4">Get Let In</h2>
+              <h2 className="text-xl font-semibold mb-4">Get In</h2>
               {existingRequest ? (
                 <div className="flex items-center justify-between">
                   <div className="text-green-700 text-sm">
