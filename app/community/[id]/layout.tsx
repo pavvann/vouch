@@ -32,8 +32,10 @@ export default async function CommunityLayout({
     },
   })
 
+  // Non-members should still see the base community page.
+  // Only render the member navigation shell if the user is a member.
   if (!membership) {
-    redirect(`/community/${communityId}`)
+    return <>{children}</>
   }
 
   return (
@@ -67,6 +69,12 @@ export default async function CommunityLayout({
               className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
             >
               Moments
+            </Link>
+            <Link
+              href={`/community/${communityId}/requests`}
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
+            >
+              Let Someone In
             </Link>
             {membership.role === 'FOUNDER' && (
               <Link

@@ -32,6 +32,12 @@ export default async function DashboardPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Communities</h1>
           <div className="flex gap-4">
+            <Link
+              href="/discover"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Discover
+            </Link>
             <CreateCommunityButton />
             <LogoutButton />
           </div>
@@ -40,7 +46,15 @@ export default async function DashboardPage() {
         {memberships.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-4">You're not a member of any communities yet.</p>
-            <CreateCommunityButton />
+            <div className="flex gap-4 justify-center">
+              <Link
+                href="/discover"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              >
+                Discover Communities
+              </Link>
+              <CreateCommunityButton />
+            </div>
           </div>
         ) : (
           <div className="grid gap-4">

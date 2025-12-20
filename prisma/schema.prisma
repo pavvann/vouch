@@ -22,6 +22,7 @@ model User {
   messages Message[]
   moments Moment[]
   momentComments MomentComment[]
+  joinRequests JoinRequest[]
   
   accounts Account[]
   sessions Session[]
@@ -75,6 +76,7 @@ model Community {
   vouches Vouch[]
   messages Message[]
   moments Moment[]
+  joinRequests JoinRequest[]
 }
 
 model Membership {
@@ -146,5 +148,17 @@ model MomentComment {
 
   moment Moment @relation(fields: [momentId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model JoinRequest {
+  id           String   @id @default(cuid())
+  communityId  String
+  userId       String
+  createdAt    DateTime @default(now())
+
+  community Community @relation(fields: [communityId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@unique([communityId, userId])
 }
 

@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { canUserVouch } from '@/lib/vouch-logic'
 import VouchButton from '@/components/VouchButton'
+import Link from 'next/link'
+import { requestJoin } from '@/app/actions/community'
 
 export default async function CommunityPage({
   params,
@@ -65,9 +67,29 @@ export default async function CommunityPage({
     .map((m) => m.user)
     .filter((user) => user.id !== session?.user?.id)
 
+  // Check if user has a join request
+  const existingRequest =
+    session?.user?.id &&
+    (await prisma.joinRequest.findUnique({
+      where: {
+        communityId_userId: {
+          communityId,
+          userId: session.user.id,
+        },
+      },
+    }))
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="mb-4">
+          <Link
+            href="/discover"
+            className="text-blue-600 hover:text-blue-800 text-sm"
+          >
+            ← Back to Discover
+          </Link>
+        </div>
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h1 className="text-3xl font-bold mb-2">{community.name}</h1>
           {community.description && (
@@ -110,20 +132,34 @@ export default async function CommunityPage({
             </div>
 
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">Members</h2>
-              {members.length === 0 ? (
-                <p className="text-gray-600">No members yet</p>
-              ) : (
-                <div className="space-y-4">
-                  {members.map((member) => (
-                    <VouchButton
-                      key={member.id}
-                      targetUserId={member.id}
-                      targetUserName={member.name || member.email}
-                      communityId={communityId}
-                    />
-                  ))}
+              <h2 className="text-xl font-semibold mb-4">Get Let In</h2>
+              {existingRequest ? (
+                <div className="flex items-center justify-between">
+                  <div className="text-green-700 text-sm">
+                    Access requested. Community members can vouch to let you in.
+                  </div>
+                  <button
+                    type="button"
+                    disabled
+                    className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md cursor-not-allowed"
+                  >
+                    Requested
+                  </button>
                 </div>
+              ) : (
+                <form
+                  action={async () => {
+                    'use server'
+                    await requestJoin(communityId)
+                  }}
+                >
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
+                    Let me in
+                  </button>
+                </form>
               )}
             </div>
           </>

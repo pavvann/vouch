@@ -154,6 +154,11 @@ export async function vouchForUser(
         role: Role.MEMBER,
       },
     })
+
+    // Clean up any join requests for this user/community
+    await prisma.joinRequest.deleteMany({
+      where: { communityId, userId: toUserId },
+    })
   }
 
   return { success: true }
