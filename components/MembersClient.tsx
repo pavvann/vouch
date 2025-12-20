@@ -218,7 +218,7 @@ export default function MembersClient({
               <div className="text-6xl mb-4">🙋</div>
               <p className="text-gray-400">No pending requests</p>
               <p className="text-sm text-gray-500 mt-2">
-                When someone requests access, they'll show up here
+                When someone requests access, they&apos;ll show up here
               </p>
             </div>
           ) : (

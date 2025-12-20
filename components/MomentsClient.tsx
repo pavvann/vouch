@@ -161,6 +161,7 @@ export default function MomentsClient({
           {/* Image Upload */}
           {imagePreview ? (
             <div className="relative w-full h-48 rounded-xl overflow-hidden group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={imagePreview}
                 alt="Moment preview"
@@ -233,6 +234,7 @@ export default function MomentsClient({
 
                 {moment.image && (
                   <div className="mb-3 rounded-xl overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={moment.image}
                       alt="Moment"

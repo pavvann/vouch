@@ -79,6 +79,7 @@ export default async function DiscoverPage() {
                 >
                   {community.coverImage && (
                     <div className="w-full h-32 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={community.coverImage}
                         alt={community.name}

@@ -54,6 +54,7 @@ export default async function DashboardPage() {
               >
                 {membership.community.coverImage && (
                   <div className="w-full h-32 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={membership.community.coverImage}
                       alt={membership.community.name}
