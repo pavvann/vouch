@@ -36,7 +36,7 @@ export default async function RequestsPage({
         <div className="card text-center py-12">
           <div className="text-6xl mb-4">🙋</div>
           <p className="text-gray-400">No pending requests</p>
-          <p className="text-sm text-gray-500 mt-2">When someone requests access, they'll show up here</p>
+          <p className="text-sm text-gray-500 mt-2">When someone requests access, they will show up here</p>
         </div>
       ) : (
         <div className="space-y-3">
