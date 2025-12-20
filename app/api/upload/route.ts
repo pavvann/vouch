@@ -1,7 +1,5 @@
-import { writeFile } from 'fs/promises'
+import { put } from '@vercel/blob'
 import { NextRequest, NextResponse } from 'next/server'
-import { join } from 'path'
-import { randomUUID } from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,20 +29,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Generate unique filename
-    const extension = file.name.split('.').pop() || 'jpg'
-    const filename = `${randomUUID()}.${extension}`
-    const filepath = join(process.cwd(), 'public/uploads/covers', filename)
-
-    // Write file to disk
-    await writeFile(filepath, buffer)
+    // Upload to Vercel Blob
+    const blob = await put(file.name, file, {
+      access: 'public',
+      addRandomSuffix: true,
+    })
 
     // Return the public URL
-    const url = `/uploads/covers/${filename}`
-    return NextResponse.json({ url }, { status: 200 })
+    return NextResponse.json({ url: blob.url }, { status: 200 })
   } catch (error) {
     console.error('Error uploading file:', error)
     return NextResponse.json(

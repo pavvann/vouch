@@ -22,6 +22,7 @@ npm install
 DATABASE_URL="postgresql://user:password@localhost:5432/vouch?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key-here"
+BLOB_READ_WRITE_TOKEN="your-vercel-blob-token"
 ```
 
    To generate a secure `NEXTAUTH_SECRET`, run:
@@ -33,6 +34,11 @@ NEXTAUTH_SECRET="your-secret-key-here"
    node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
    ```
    Copy the output and paste it as the value for `NEXTAUTH_SECRET` in your `.env` file.
+   
+   For `BLOB_READ_WRITE_TOKEN`:
+   - Go to your Vercel dashboard → Storage → Create Blob Store
+   - Copy the token and add it to your `.env` file
+   - For local development, you can use a dummy token (uploads won't work locally)
 
 3. Generate Prisma client and push schema:
 ```bash
