@@ -1,13 +1,36 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
+import AppleProvider from 'next-auth/providers/apple'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from './prisma'
 import bcrypt from 'bcryptjs'
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
-  providers: [
-    CredentialsProvider({
+const providers = []
+
+// Add Google OAuth if credentials are provided
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  providers.push(
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })
+  )
+}
+
+// Add Apple OAuth if credentials are provided
+if (process.env.APPLE_ID && process.env.APPLE_SECRET) {
+  providers.push(
+    AppleProvider({
+      clientId: process.env.APPLE_ID,
+      clientSecret: process.env.APPLE_SECRET,
+    })
+  )
+}
+
+// Always include credentials provider
+providers.push(
+  CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
@@ -55,8 +78,12 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
         }
       },
-    }),
-  ],
+    })
+)
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as any,
+  providers,
   session: {
     strategy: 'jwt',
   },
