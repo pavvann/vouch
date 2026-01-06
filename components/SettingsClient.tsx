@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { removeMemberFromCommunity, promoteToValidator } from '@/app/actions/community'
+import { removeMemberFromCommunity, promoteToValidator, updateCommunityDiscoverability, updateCommunityFinalApproval } from '@/app/actions/community'
 import { useRouter } from 'next/navigation'
 import { Role } from '@prisma/client'
 import { formatRole } from '@/lib/role-utils'
@@ -25,6 +25,8 @@ interface Community {
   description: string | null
   requiredVouches: number
   memberCooldownDays: number
+  isDiscoverable: boolean
+  requiresFinalApproval: boolean
 }
 
 export default function SettingsClient({
@@ -39,6 +41,8 @@ export default function SettingsClient({
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [discoverabilitySaving, setDiscoverabilitySaving] = useState(false)
+  const [finalApprovalSaving, setFinalApprovalSaving] = useState(false)
 
   const handleRemoveMember = async (userId: string) => {
     if (!confirm('Are you sure you want to remove this member?')) return
@@ -78,6 +82,48 @@ export default function SettingsClient({
     }
   }
 
+  const handleToggleDiscoverability = async () => {
+    setError('')
+    setDiscoverabilitySaving(true)
+
+    try {
+      const result = await updateCommunityDiscoverability(
+        communityId,
+        !community.isDiscoverable
+      )
+      if ((result as any).error) {
+        setError((result as any).error)
+      } else {
+        router.refresh()
+      }
+    } catch (err) {
+      setError('Failed to update discoverability')
+    } finally {
+      setDiscoverabilitySaving(false)
+    }
+  }
+
+  const handleToggleFinalApproval = async () => {
+    setError('')
+    setFinalApprovalSaving(true)
+
+    try {
+      const result = await updateCommunityFinalApproval(
+        communityId,
+        !community.requiresFinalApproval
+      )
+      if ((result as any).error) {
+        setError((result as any).error)
+      } else {
+        router.refresh()
+      }
+    } catch (err) {
+      setError('Failed to update final approval setting')
+    } finally {
+      setFinalApprovalSaving(false)
+    }
+  }
+
   const nonFounders = members.filter((m) => m.role !== Role.FOUNDER)
 
   return (
@@ -109,6 +155,48 @@ export default function SettingsClient({
             <span className="badge bg-pink-500/20 text-pink-300 border-pink-500/30">
               {community.memberCooldownDays} days
             </span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-t border-white/5 pt-3 mt-1">
+            <div>
+              <span className="text-gray-400 block">Discoverability</span>
+              <span className="text-xs text-gray-500">
+                {community.isDiscoverable
+                  ? 'This community appears on the public discover page.'
+                  : 'Hidden from discover. Only accessible via direct link or membership.'}
+              </span>
+            </div>
+            <button
+              onClick={handleToggleDiscoverability}
+              disabled={discoverabilitySaving}
+              className="btn-secondary text-xs px-3 py-1 whitespace-nowrap"
+            >
+              {discoverabilitySaving
+                ? 'Saving...'
+                : community.isDiscoverable
+                ? 'Make Hidden'
+                : 'Make Discoverable'}
+            </button>
+          </div>
+          <div className="flex justify-between items-center py-2 border-t border-white/5 pt-3 mt-1">
+            <div>
+              <span className="text-gray-400 block">Final Approval Required</span>
+              <span className="text-xs text-gray-500">
+                {community.requiresFinalApproval
+                  ? 'After users receive required vouches, creator/validator must approve before they join.'
+                  : 'Users automatically join after receiving required vouches.'}
+              </span>
+            </div>
+            <button
+              onClick={handleToggleFinalApproval}
+              disabled={finalApprovalSaving}
+              className="btn-secondary text-xs px-3 py-1 whitespace-nowrap"
+            >
+              {finalApprovalSaving
+                ? 'Saving...'
+                : community.requiresFinalApproval
+                ? 'Disable'
+                : 'Enable'}
+            </button>
           </div>
         </div>
       </div>

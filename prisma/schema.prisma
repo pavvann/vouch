@@ -65,13 +65,15 @@ model VerificationToken {
 }
 
 model Community {
-  id                 String   @id @default(cuid())
-  name               String
-  description        String?
-  coverImage         String?  // path to uploaded cover image
-  requiredVouches    Int      // 1 | 2 | 3
-  memberCooldownDays Int      // 7 | 30
-  createdAt          DateTime @default(now())
+  id                   String   @id @default(cuid())
+  name                 String
+  description          String?
+  coverImage           String?  // path to uploaded cover image
+  isDiscoverable       Boolean  @default(false) // controls visibility on Discover page
+  requiresFinalApproval Boolean @default(false) // if true, creator/validator must approve after vouches
+  requiredVouches      Int      // 1 | 2 | 3
+  memberCooldownDays   Int      // 7 | 30
+  createdAt            DateTime @default(now())
 
   memberships Membership[]
   vouches Vouch[]
@@ -152,11 +154,18 @@ model MomentComment {
   user   User   @relation(fields: [userId], references: [id])
 }
 
+enum JoinRequestStatus {
+  PENDING_VOUCHES  // waiting for vouches
+  PENDING_APPROVAL // has enough vouches, waiting for creator/validator approval
+  REJECTED         // rejected by creator/validator
+}
+
 model JoinRequest {
-  id           String   @id @default(cuid())
+  id           String            @id @default(cuid())
   communityId  String
   userId       String
-  createdAt    DateTime @default(now())
+  status       JoinRequestStatus @default(PENDING_VOUCHES)
+  createdAt    DateTime          @default(now())
 
   community Community @relation(fields: [communityId], references: [id])
   user      User      @relation(fields: [userId], references: [id])

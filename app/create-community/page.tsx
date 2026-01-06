@@ -11,6 +11,8 @@ export default function CreateCommunityPage() {
   const [description, setDescription] = useState('')
   const [requiredVouches, setRequiredVouches] = useState(2)
   const [memberCooldownDays, setMemberCooldownDays] = useState(30)
+  const [isDiscoverable, setIsDiscoverable] = useState(false)
+  const [requiresFinalApproval, setRequiresFinalApproval] = useState(false)
   const [coverImage, setCoverImage] = useState<File | null>(null)
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -66,7 +68,9 @@ export default function CreateCommunityPage() {
         description || null,
         requiredVouches,
         memberCooldownDays,
-        coverImageUrl
+        coverImageUrl,
+        isDiscoverable,
+        requiresFinalApproval
       )
 
       if (result.success) {
@@ -180,6 +184,40 @@ export default function CreateCommunityPage() {
           <div className="card space-y-5">
             <h3 className="text-lg font-semibold text-gradient">Community Settings</h3>
             
+            <div>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isDiscoverable}
+                  onChange={(e) => setIsDiscoverable(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-white/20 bg-slate-900/80 text-pink-500 focus:ring-pink-500/50"
+                />
+                <div>
+                  <p className="text-sm font-medium text-gray-200">Discoverable</p>
+                  <p className="text-xs text-gray-500">
+                    If enabled, this community will appear on the public discover page. Off by default to keep access intentional.
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={requiresFinalApproval}
+                  onChange={(e) => setRequiresFinalApproval(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-white/20 bg-slate-900/80 text-pink-500 focus:ring-pink-500/50"
+                />
+                <div>
+                  <p className="text-sm font-medium text-gray-200">Require Final Approval</p>
+                  <p className="text-xs text-gray-500">
+                    If enabled, after users receive the required vouches, a creator or validator must approve them before they can join. Adds an extra layer of intentionality.
+                  </p>
+                </div>
+              </label>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Required Vouches

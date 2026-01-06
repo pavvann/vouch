@@ -1,5 +1,5 @@
 import { prisma } from './prisma'
-import { Role } from '@prisma/client'
+import { Role, JoinRequestStatus } from '@prisma/client'
 
 export async function canUserVouch(
   userId: string,
@@ -176,19 +176,28 @@ export async function vouchForUser(
   })
 
   if (community && vouchCount >= community.requiredVouches) {
-    // Auto-join the user
-    await prisma.membership.create({
-      data: {
-        userId: toUserId,
-        communityId,
-        role: Role.MEMBER,
-      },
-    })
+    // Check if final approval is required
+    if (community.requiresFinalApproval) {
+      // Mark join request as pending approval instead of auto-joining
+      await prisma.joinRequest.updateMany({
+        where: { communityId, userId: toUserId },
+        data: { status: JoinRequestStatus.PENDING_APPROVAL },
+      })
+    } else {
+      // Auto-join the user (original behavior)
+      await prisma.membership.create({
+        data: {
+          userId: toUserId,
+          communityId,
+          role: Role.MEMBER,
+        },
+      })
 
-    // Clean up any join requests for this user/community
-    await prisma.joinRequest.deleteMany({
-      where: { communityId, userId: toUserId },
-    })
+      // Clean up any join requests for this user/community
+      await prisma.joinRequest.deleteMany({
+        where: { communityId, userId: toUserId },
+      })
+    }
   }
 
   return { success: true }

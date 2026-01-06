@@ -47,7 +47,9 @@ export default async function DiscoverPage() {
   }
 
   const joined = allCommunities.filter((c) => userMembershipIds.has(c.id))
-  const discoverable = allCommunities.filter((c) => !userMembershipIds.has(c.id))
+  const discoverable = allCommunities.filter(
+    (c) => !userMembershipIds.has(c.id) && c.isDiscoverable
+  )
 
   return (
     <div className="min-h-screen pb-24">
