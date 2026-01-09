@@ -2,11 +2,12 @@
 
 import { useEffect } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
+import type { LoginModalOptions } from '@privy-io/react-auth'
 import { useRouter } from 'next/navigation'
 
-const PRIVY_LOGIN_OPTIONS = {
+const PRIVY_LOGIN_OPTIONS: LoginModalOptions = {
   loginMethods: ['email', 'sms', 'google', 'apple'],
-} as const
+}
 
 type Props = {
   label?: string
@@ -18,16 +19,10 @@ export default function PrivyAuthButton({ label = 'Continue', className = '' }: 
   const { ready, authenticated, login } = usePrivy()
 
   useEffect(() => {
-    if (!ready || !authenticated) {
-      return
-    }
-
-    const timeout = setTimeout(() => {
-      router.push('/dashboard')
+    if (ready && authenticated) {
+      router.replace('/dashboard')
       router.refresh()
-    }, 100)
-
-    return () => clearTimeout(timeout)
+    }
   }, [ready, authenticated, router])
 
   const handleClick = async () => {

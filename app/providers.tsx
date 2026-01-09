@@ -5,7 +5,12 @@ import { privyConfig } from '@/lib/privy'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   if (!privyConfig.appId) {
-    console.warn('NEXT_PUBLIC_PRIVY_APP_ID is not set. Please add it to your .env file.')
+    const message = 'NEXT_PUBLIC_PRIVY_APP_ID is not set. Add it to your environment to enable Privy auth.'
+    if (process.env.NODE_ENV === 'development') {
+      throw new Error(message)
+    }
+    console.error(message)
+    return <>{children}</>
   }
 
   return (
@@ -17,4 +22,3 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </PrivyProvider>
   )
 }
-

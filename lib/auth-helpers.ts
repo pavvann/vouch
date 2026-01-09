@@ -4,6 +4,7 @@ import { PrivyClient } from '@privy-io/server-auth'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { prisma } from './prisma'
+import type { User } from '@prisma/client'
 
 const PRIVY_APP_ID = process.env.PRIVY_APP_ID || process.env.NEXT_PUBLIC_PRIVY_APP_ID
 const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET
@@ -73,10 +74,7 @@ function getPrivyWalletAccount(linkedAccounts: PrivyLinkedAccount[]) {
   )
 }
 
-async function ensureWalletAddress<T extends { id: string; walletAddress: string | null }>(
-  user: T,
-  walletAddress: string | null
-): Promise<T> {
+async function ensureWalletAddress(user: User, walletAddress: string | null): Promise<User> {
   if (!walletAddress || user.walletAddress) {
     return user
   }
@@ -84,7 +82,7 @@ async function ensureWalletAddress<T extends { id: string; walletAddress: string
   return prisma.user.update({
     where: { id: user.id },
     data: { walletAddress },
-  }) as Promise<T>
+  })
 }
 
 // Get or create user in our database from Privy user
@@ -97,7 +95,7 @@ async function getOrCreateUserFromPrivy(privyUserId: string, privyUser: any) {
   const defaultName = emailAccount?.name || privyUser.name || null
 
   // Find user by Privy ID first
-  let user = await prisma.user.findUnique({
+  let user: User | null = await prisma.user.findUnique({
     where: { privyUserId },
   })
 

@@ -1,17 +1,26 @@
+import type { PrivyClientConfig } from '@privy-io/react-auth'
+
 // Privy configuration
 // Get your App ID from https://dashboard.privy.io
 
-export const privyConfig = {
-  appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID || '',
+const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? null
+
+export const privyConfig: { appId: string | null; config: PrivyClientConfig } = {
+  appId: PRIVY_APP_ID,
   config: {
     // Login methods
     loginMethods: ['email', 'sms'],
     
     // Embedded wallets - automatically created for all users
     embeddedWallets: {
-      createOnLogin: 'users-without-wallets', // Create wallet for users who don't have one
-      requireUserPasswordOnCreate: false, // No password needed for wallet creation
-      noPromptOnSignature: false, // Show prompts for wallet actions
+      ethereum: {
+        createOnLogin: 'users-without-wallets', // Create wallet for users who don't have one
+      },
+      solana: {
+        createOnLogin: 'off',
+      },
+      // requireUserPasswordOnCreate: false, // No password needed for wallet creation
+      // noPromptOnSignature: false, // Show prompts for wallet actions
     },
     
     // Appearance
@@ -28,5 +37,3 @@ export const privyConfig = {
     },
   },
 }
-
-
