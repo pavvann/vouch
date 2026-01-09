@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/prisma'
 import { canUserVouch } from '@/lib/vouch-logic'
 import VouchButton from '@/components/VouchButton'
@@ -12,7 +11,10 @@ export default async function CommunityPage({
 }: {
   params: { id: string }
 }) {
-  const session = await getServerSession(authOptions)
+  const user = await getCurrentUser()
+  if (user && !user.name) {
+    redirect('/profile/setup')
+  }
   const communityId = params.id
 
   const community = await prisma.community.findUnique({
@@ -36,48 +38,49 @@ export default async function CommunityPage({
     return <div className="p-8">Community not found</div>
   }
 
-  // Check if user is already a member
-  const userMembership = session?.user?.id
-    ? await prisma.membership.findUnique({
+  let membership = null
+  let vouchCount = 0
+  let existingRequest = null
+
+  if (user) {
+    const [membershipResult, vouchCountResult, joinRequestResult] = await Promise.all([
+      prisma.membership.findUnique({
         where: {
           userId_communityId: {
-            userId: session.user.id,
+            userId: user.id,
             communityId,
           },
         },
-      })
-    : null
-
-  if (userMembership) {
-    redirect(`/community/${communityId}/chat`)
-  }
-
-  // Get vouch count for current user
-  const vouchCount = session?.user?.id
-    ? await prisma.vouch.count({
+      }),
+      prisma.vouch.count({
         where: {
-          toUserId: session.user.id,
+          toUserId: user.id,
           communityId,
         },
-      })
-    : 0
+      }),
+      prisma.joinRequest.findUnique({
+        where: {
+          communityId_userId: {
+            communityId,
+            userId: user.id,
+          },
+        },
+      }),
+    ])
+
+    membership = membershipResult
+    vouchCount = vouchCountResult
+    existingRequest = joinRequestResult
+  }
+
+  if (membership) {
+    redirect(`/community/${communityId}/chat`)
+  }
 
   // Get all members for vouching (exclude current user)
   const members = community.memberships
     .map((m) => m.user)
-    .filter((user) => user.id !== session?.user?.id)
-
-  // Check if user has a join request
-  const existingRequest =
-    session?.user?.id &&
-    (await prisma.joinRequest.findUnique({
-      where: {
-        communityId_userId: {
-          communityId,
-          userId: session.user.id,
-        },
-      },
-    }))
+    .filter((u) => u.id !== user?.id)
 
   return (
     <div className="min-h-screen">
@@ -101,7 +104,7 @@ export default async function CommunityPage({
           </div>
         </div>
 
-        {!session ? (
+        {!user ? (
           <div className="card text-center">
             <p className="text-gray-600 mb-4">Please sign in to view this community</p>
             <a
@@ -168,4 +171,3 @@ export default async function CommunityPage({
     </div>
   )
 }
-

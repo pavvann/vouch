@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/prisma'
 import { getMoments } from '@/app/actions/moments'
 import MomentsClient from '@/components/MomentsClient'
@@ -10,16 +9,12 @@ export default async function MomentsPage({
 }: {
   params: { id: string }
 }) {
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user?.id) {
-    redirect('/login')
-  }
+  const user = await requireAuth()
 
   const membership = await prisma.membership.findUnique({
     where: {
       userId_communityId: {
-        userId: session.user.id,
+        userId: user.id,
         communityId: params.id,
       },
     },

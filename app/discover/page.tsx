@@ -1,17 +1,12 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import LogoutButton from '@/components/LogoutButton'
 import CreateCommunityButton from '@/components/CreateCommunityButton'
 
 export default async function DiscoverPage() {
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user?.id) {
-    redirect('/login')
-  }
+  const user = await requireAuth()
 
   // All communities with member counts
   const allCommunities = await prisma.community.findMany({
@@ -28,14 +23,14 @@ export default async function DiscoverPage() {
 
   // User memberships
   const userMemberships = await prisma.membership.findMany({
-    where: { userId: session.user.id },
+    where: { userId: user.id },
     select: { communityId: true },
   })
   const userMembershipIds = new Set(userMemberships.map((m) => m.communityId))
 
   // Vouches the user has received per community
   const userVouches = await prisma.vouch.findMany({
-    where: { toUserId: session.user.id },
+    where: { toUserId: user.id },
     select: { communityId: true },
   })
   const vouchCountsByCommunity = new Map<string, number>()
@@ -47,7 +42,9 @@ export default async function DiscoverPage() {
   }
 
   const joined = allCommunities.filter((c) => userMembershipIds.has(c.id))
-  const discoverable = allCommunities.filter((c) => !userMembershipIds.has(c.id))
+  const discoverable = allCommunities.filter(
+    (c) => !userMembershipIds.has(c.id) && c.isDiscoverable
+  )
 
   return (
     <div className="min-h-screen pb-24">

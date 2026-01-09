@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
@@ -11,8 +11,14 @@ export const metadata: Metadata = {
   title: 'Vouch',
   description: 'Vouch-based community platform',
   manifest: '/manifest.json',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
   themeColor: '#0a0a0f',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
 }
 
 export default function RootLayout({
@@ -40,4 +46,3 @@ export default function RootLayout({
     </html>
   )
 }
-

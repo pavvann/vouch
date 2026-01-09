@@ -1,125 +1,24 @@
-'use client'
-
-import { useState } from 'react'
-import { register } from '@/app/actions/auth'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import PrivyAuthButton from '@/components/PrivyAuthButton'
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-
-    try {
-      const result = await register(email, password, name || undefined)
-      if (result.error) {
-        setError(result.error)
-      } else {
-        router.push('/login?registered=true')
-      }
-    } catch (err) {
-      setError('Something went wrong')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
+        <div className="text-center space-y-3">
           <h1 className="page-header mb-2">Join Vouch</h1>
-          <p className="text-gray-400">Create your account to get started</p>
+          <p className="text-gray-400 text-lg">Create your account to get started</p>
         </div>
         
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="glass border-red-500/30 bg-red-500/10 text-red-300 px-4 py-3 rounded-xl text-sm">
-              {error}
-            </div>
-          )}
-          
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                Name (optional)
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-slate-900/80 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', color: 'white' }}
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full"
-          >
-            {loading ? '✨ Creating account...' : '🚀 Sign up'}
-          </button>
-
-          <div className="text-center">
-            <Link
-              href="/login"
-              className="text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Already have an account? <span className="text-gradient font-semibold">Sign in</span>
-            </Link>
-          </div>
-        </form>
+        <div className="card space-y-4">
+          <PrivyAuthButton
+            label="Continue with Privy"
+            className="w-full"
+          />
+          <p className="text-xs text-gray-500 text-center">
+            Privy will guide you through sign up or login as needed.
+          </p>
+        </div>
       </div>
     </div>
   )
 }
-

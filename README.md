@@ -1,4 +1,4 @@
-# Vouch ✨
+# Vouch 
 
 > Communities built on trust, not algorithms.
 

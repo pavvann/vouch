@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { usePrivy } from '@privy-io/react-auth'
 
 const links = [
   { href: '/dashboard', label: 'Communities', icon: '🏘️' },
@@ -11,20 +11,25 @@ const links = [
 ]
 
 export default function BottomNav() {
-  const { status } = useSession()
+  const { authenticated, ready } = usePrivy()
   const pathname = usePathname()
 
   // Don't show on auth pages or when not authenticated
-  if (status !== 'authenticated') {
+  if (!ready || !authenticated) {
     return null
   }
 
-  if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname === '/') {
+  if (
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/register') ||
+    pathname === '/' ||
+    pathname.startsWith('/profile/setup')
+  ) {
     return null
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.08] pb-safe">
       <div className="max-w-4xl mx-auto px-4 py-3 grid grid-cols-3 gap-2">
         {links.map((link) => {
           const active = pathname === link.href || pathname.startsWith(`${link.href}/`)
@@ -32,14 +37,14 @@ export default function BottomNav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex flex-col items-center justify-center py-2 rounded-xl transition-all ${
+              className={`flex flex-col items-center justify-center py-2.5 rounded-xl transition-all duration-300 ease-out ${
                 active
-                  ? 'text-white bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/40'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'text-white bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-pink-500/20 border border-pink-500/30 shadow-lg shadow-pink-500/10'
+                  : 'text-gray-500 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
               <span className="text-2xl leading-none mb-1">{link.icon}</span>
-              <span className="text-xs font-medium">{link.label}</span>
+              <span className="text-xs font-semibold">{link.label}</span>
             </Link>
           )
         })}
@@ -47,4 +52,3 @@ export default function BottomNav() {
     </nav>
   )
 }
-
