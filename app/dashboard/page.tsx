@@ -1,23 +1,17 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { signOut } from 'next-auth/react'
 import LogoutButton from '@/components/LogoutButton'
 import CreateCommunityButton from '@/components/CreateCommunityButton'
 import { formatRole } from '@/lib/role-utils'
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user?.id) {
-    redirect('/login')
-  }
+  const user = await requireAuth()
 
   const memberships = await prisma.membership.findMany({
     where: {
-      userId: session.user.id,
+      userId: user.id,
     },
     include: {
       community: {

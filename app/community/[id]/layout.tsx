@@ -1,9 +1,8 @@
-import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/prisma'
-import Link from 'next/link'
 import { formatRole } from '@/lib/role-utils'
+import CommunityNav from '@/components/CommunityNav'
+import { Role } from '@prisma/client'
 
 export default async function CommunityLayout({
   children,
@@ -12,18 +11,14 @@ export default async function CommunityLayout({
   children: React.ReactNode
   params: { id: string }
 }) {
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user?.id) {
-    redirect('/login')
-  }
+  const user = await requireAuth()
 
   const communityId = params.id
 
   const membership = await prisma.membership.findUnique({
     where: {
       userId_communityId: {
-        userId: session.user.id,
+        userId: user.id,
         communityId,
       },
     },
@@ -65,27 +60,10 @@ export default async function CommunityLayout({
           </div>
         </div>
         
-        {/* Tab Navigation */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-          <Link 
-            href={`/community/${communityId}/chat`}
-            className="btn-ghost whitespace-nowrap"
-          >
-            💬 Chat
-          </Link>
-          <Link 
-            href={`/community/${communityId}/moments`}
-            className="btn-ghost whitespace-nowrap"
-          >
-            ✨ Moments
-          </Link>
-          <Link 
-            href={`/community/${communityId}/members`}
-            className="btn-ghost whitespace-nowrap"
-          >
-            👥 Members
-          </Link>
-        </div>
+        <CommunityNav
+          communityId={communityId}
+          showSettings={membership.role === Role.FOUNDER}
+        />
       </div>
       
       <div className="max-w-4xl mx-auto px-4 pb-6">
@@ -94,4 +72,3 @@ export default async function CommunityLayout({
     </div>
   )
 }
-

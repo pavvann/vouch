@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { usePrivy } from '@privy-io/react-auth'
 
 const links = [
   { href: '/dashboard', label: 'Communities', icon: '🏘️' },
@@ -11,15 +11,20 @@ const links = [
 ]
 
 export default function BottomNav() {
-  const { status } = useSession()
+  const { authenticated, ready } = usePrivy()
   const pathname = usePathname()
 
   // Don't show on auth pages or when not authenticated
-  if (status !== 'authenticated') {
+  if (!ready || !authenticated) {
     return null
   }
 
-  if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname === '/') {
+  if (
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/register') ||
+    pathname === '/' ||
+    pathname.startsWith('/profile/setup')
+  ) {
     return null
   }
 
@@ -47,4 +52,3 @@ export default function BottomNav() {
     </nav>
   )
 }
-

@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/prisma'
 import { listJoinRequests, dismissJoinRequest, vouchUser, approvePendingApproval, rejectPendingApproval } from '@/app/actions/community'
 import { Role, JoinRequestStatus } from '@prisma/client'
@@ -10,12 +9,11 @@ export default async function RequestsPage({
 }: {
   params: { id: string }
 }) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect('/login')
+  const user = await requireAuth()
 
   const membership = await prisma.membership.findUnique({
     where: {
-      userId_communityId: { userId: session.user.id, communityId: params.id },
+      userId_communityId: { userId: user.id, communityId: params.id },
     },
     include: { community: true },
   })

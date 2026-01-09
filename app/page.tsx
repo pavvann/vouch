@@ -1,12 +1,11 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import Link from 'next/link'
+import { getCurrentUser } from '@/lib/auth-helpers'
+import PrivyAuthButton from '@/components/PrivyAuthButton'
 
 export default async function Home() {
-  const session = await getServerSession(authOptions)
+  const user = await getCurrentUser()
 
-  if (session) {
+  if (user) {
     redirect('/dashboard')
   }
 
@@ -26,18 +25,10 @@ export default async function Home() {
         </div>
 
         <div className="space-y-4 max-w-sm mx-auto">
-          <Link
-            href="/login"
-            className="block btn-primary w-full text-lg py-4"
-          >
-            ✨ Sign In
-          </Link>
-          <Link
-            href="/register"
-            className="block btn-secondary w-full text-lg py-4"
-          >
-            🚀 Create Account
-          </Link>
+          <PrivyAuthButton
+            label="✨ Get Started"
+            className="w-full text-lg py-4"
+          />
         </div>
 
         <div className="flex items-center justify-center gap-12 text-sm text-gray-400 pt-12">
@@ -58,4 +49,3 @@ export default async function Home() {
     </div>
   )
 }
-
